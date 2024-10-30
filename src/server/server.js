@@ -1,9 +1,13 @@
-import { ApolloServer, gql } from "apollo-server";
+// import { ApolloServer, gql } from "apollo-server";
+
+import { ApolloServer } from "@apollo/server";
+import { gql } from "graphql-tag";
+import { startStandaloneServer } from "@apollo/server/standalone";
 import axios from "axios";
 
 // 定義 GraphQL Schema
-// 上方為res 下方為req
 const typeDefs = gql`
+  # response欄位
   type RDG {
     RDGId: String!
     status: String!
@@ -16,11 +20,12 @@ const typeDefs = gql`
     NextSignName: String!
   }
 
+  # request欄位
   type Query {
     getRDGList(
       Formno: String
       status: String
-      type: String!
+      type: String
       Coid: String
       DeptId: String
       Startdt: String
@@ -37,7 +42,7 @@ const resolvers = {
       try {
         const response = await axios.post(
           "https://orangeapitest.orange-electronic.com/api/GetRDGList",
-          args // 將 GraphQL 查詢參數直接作為請求主體
+          args
         );
         return response.data;
       } catch (error) {
@@ -52,6 +57,9 @@ const resolvers = {
 const server = new ApolloServer({ typeDefs, resolvers });
 
 // 啟動伺服器
-server.listen().then(({ url }) => {
-  console.log(`🚀 Server ready at ${url}`);
+const { url } = await startStandaloneServer(server, {
+  listen: { port: 4000 },
 });
+
+// 讓伺服器運行
+console.log(`🚀  Server ready at: ${url}`);

@@ -2,8 +2,9 @@ import React from "react";
 import { useQuery, gql } from "@apollo/client";
 
 // 定義 GraphQL 查詢
-const GET_RDG_LIST = gql`
-  query getRDGList(
+const fetchRDGData = gql`
+  # 定義查詢的參數及類型
+  query fetchRDGData(
     $Formno: String
     $status: String
     $type: String
@@ -13,6 +14,7 @@ const GET_RDG_LIST = gql`
     $Enddt: String
     $Createid: String
   ) {
+    # 查詢調用
     getRDGList(
       Formno: $Formno
       status: $status
@@ -23,6 +25,7 @@ const GET_RDG_LIST = gql`
       Enddt: $Enddt
       Createid: $Createid
     ) {
+      # 需要的response
       RDGId
       status
       CreateName
@@ -34,14 +37,16 @@ const GET_RDG_LIST = gql`
       # NextSignName
     }
   }
+
+  # query getDept() ....
 `;
 
 function List() {
   // 使用 useQuery 發送查詢請求
-  const { loading, error, data } = useQuery(GET_RDG_LIST, {
+  const { loading, error, data } = useQuery(fetchRDGData, {
     variables: {
       Formno: "",
-      status: "",
+      status: "2",
       type: "0",
       Coid: "",
       DeptId: "",
